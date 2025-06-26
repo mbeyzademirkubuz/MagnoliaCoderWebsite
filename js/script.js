@@ -43,9 +43,11 @@ ScrollReveal({
 });
 
 ScrollReveal().reveal('.home-content, .heading', { origin:'top' });
-//ScrollReveal().reveal('.home-img, .services-container, .portfolio-box, .contact form', { origin:'bottom' });
+ScrollReveal().reveal('.services-container .services-box', { origin:'left' });
 ScrollReveal().reveal('.home-content h1, .about-img', { origin:'left' });
 ScrollReveal().reveal('.home-content p, .about-content', { origin:'right' });
+ScrollReveal().reveal('.timeline-item', { origin:'left', distance: '100px', interval: 200 });
+ScrollReveal().reveal('.portfolio-box', { origin:'left', distance: '100px', interval: 200 });
 
 
 const typed = new Typed('.multiple-text', {
@@ -72,3 +74,26 @@ function downloadFile() {
     element.style.color = "white";
     element.innerText = "Dosya indirildi.";
 };
+
+// Scroll to top button functionality
+const backToTopButton = document.querySelector('.back-to-top');
+
+// Initially hide the button
+backToTopButton.style.display = 'none';
+
+window.addEventListener('scroll', () => {
+    if (window.scrollY > 300) {
+        backToTopButton.style.display = 'flex';
+    } else {
+        backToTopButton.style.display = 'none';
+    }
+});
+
+// Smooth scroll when clicking the button
+backToTopButton.addEventListener('click', (e) => {
+    e.preventDefault();
+    window.scrollTo({
+        top: 0,
+        behavior: 'smooth'
+    });
+});
