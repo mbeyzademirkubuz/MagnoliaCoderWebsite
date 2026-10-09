@@ -1,0 +1,213 @@
+---
+import type { Lang } from '../data/content';
+import { langPath, sections as tabs, useT } from '../i18n/ui';
+import Icon from './Icon.astro';
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const t = useT(lang);
+---
+
+<a class="skip-link" href="#main">{t('nav.skip')}</a>
+
+<header class="topbar">
+  <div class="container topbar-inner">
+    <a href={langPath(lang)} class="brand mono" aria-label="MagnoliaCoder">
+      <span class="brand-prompt">&gt;_</span>
+      <span>magnolia<span class="brand-dim">coder</span></span>
+    </a>
+
+    <nav class="tabs mono" aria-label="Sections">
+      {
+        tabs.map((tab) => (
+          <a href={`#${tab.id}`} class="tab" data-tab={tab.id}>
+            <span class="tab-dot" style={`background:${tab.color}`} />
+            {t(`nav.${tab.id}`)}
+            <span class="tab-ext">{tab.ext}</span>
+          </a>
+        ))
+      }
+    </nav>
+
+    <button class="palette-btn mono" type="button" data-open-palette aria-label={t('status.palette')}>
+      <Icon name="search" />
+      <kbd>⌘K</kbd>
+    </button>
+  </div>
+</header>
+
+<style>
+  .skip-link {
+    position: absolute;
+    left: 16px;
+    top: -60px;
+    z-index: 200;
+    padding: 8px 14px;
+    border-radius: var(--radius-sm);
+    background: var(--accent);
+    color: var(--bg);
+    font-weight: 600;
+  }
+
+  .skip-link:focus {
+    top: 12px;
+  }
+
+  .topbar {
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    background: color-mix(in srgb, var(--bg) 82%, transparent);
+    backdrop-filter: blur(14px) saturate(140%);
+    -webkit-backdrop-filter: blur(14px) saturate(140%);
+    border-bottom: 1px solid var(--line);
+  }
+
+  .topbar-inner {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    min-height: var(--header-h);
+  }
+
+  .brand {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-weight: 600;
+    font-size: 0.9375rem;
+    flex: none;
+  }
+
+  .brand-prompt {
+    display: grid;
+    place-items: center;
+    width: 28px;
+    height: 28px;
+    border-radius: 7px;
+    background: var(--accent-soft);
+    color: var(--accent);
+    font-size: 0.8125rem;
+  }
+
+  .brand-dim {
+    color: var(--text-dim);
+  }
+
+  .tabs {
+    position: relative;
+    display: flex;
+    align-self: stretch;
+    margin-inline: auto;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+
+  .tabs::-webkit-scrollbar {
+    display: none;
+  }
+
+  .tab {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    padding-inline: 14px;
+    font-size: 0.8125rem;
+    color: var(--text-dim);
+    white-space: nowrap;
+    border-inline-end: 1px solid var(--line);
+    transition: color 0.15s, background-color 0.15s;
+  }
+
+  .tab:first-child {
+    border-inline-start: 1px solid var(--line);
+  }
+
+  .tab:hover {
+    color: var(--text);
+    background: var(--bg-hover);
+  }
+
+  .tab.is-active {
+    color: var(--text);
+    background: var(--bg-elev);
+  }
+
+  .tab.is-active::after {
+    content: '';
+    position: absolute;
+    inset-inline: 0;
+    top: 0;
+    height: 2px;
+    background: var(--accent);
+  }
+
+  .tab-dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 2px;
+    opacity: 0.85;
+  }
+
+  .tab-ext {
+    margin-inline-start: -6px;
+    color: var(--text-dim);
+  }
+
+  .palette-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    height: 32px;
+    padding-inline: 10px;
+    border: 1px solid var(--line);
+    border-radius: var(--radius-sm);
+    color: var(--text-dim);
+    font-size: 0.75rem;
+    flex: none;
+    transition: border-color 0.15s, color 0.15s;
+  }
+
+  .palette-btn:hover {
+    color: var(--text);
+    border-color: var(--line-strong);
+  }
+
+  kbd {
+    font-family: inherit;
+  }
+
+  @media (max-width: 900px) {
+    .topbar-inner {
+      flex-wrap: wrap;
+      gap: 0 12px;
+      padding-top: 8px;
+    }
+
+    .brand {
+      margin-inline-end: auto;
+    }
+
+    .tabs {
+      order: 3;
+      width: 100%;
+      height: 40px;
+      margin-top: 8px;
+      margin-inline: calc(-1 * clamp(16px, 4vw, 32px));
+      width: calc(100% + 2 * clamp(16px, 4vw, 32px));
+      border-top: 1px solid var(--line);
+    }
+
+    .tab:first-child {
+      border-inline-start: 0;
+    }
+
+    .palette-btn kbd {
+      display: none;
+    }
+  }
+</style>

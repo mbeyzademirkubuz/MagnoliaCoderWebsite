@@ -1,0 +1,170 @@
+---
+import type { Lang } from '../data/content';
+import { experience } from '../data/content';
+import { useT } from '../i18n/ui';
+import SectionHead from './SectionHead.astro';
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const t = useT(lang);
+---
+
+<section id="experience" class="section" aria-labelledby="experience-title">
+  <div class="container">
+    <SectionHead num="02" path={`${t('nav.experience')}.log`} title={t('experience.title')} id="experience">
+      <p class="git-cmd mono" aria-hidden="true">
+        <span class="tok-punc">$</span> git log --author="beyza" --oneline
+      </p>
+    </SectionHead>
+
+    <ol class="log">
+      {
+        experience.map((job) => (
+          <li class:list={['commit reveal', { 'is-current': job.current }]}>
+            <div class="commit-meta mono">
+              <span class="tok-acc">commit {job.hash}</span>
+              {job.current && (
+                <span class="head">
+                  (<span class="tok-str">HEAD</span> <span class="tok-punc">-&gt;</span>{' '}
+                  <span class="tok-prop">{t('experience.current')}</span>)
+                </span>
+              )}
+              <span class="commit-date">{job.date[lang]}</span>
+            </div>
+            <h3 class="commit-title">
+              {job.title[lang]} <span class="commit-at">@ {job.company}</span>
+            </h3>
+            <ul class="commit-body">
+              {job.bullets.map((b) => (
+                <li>{b[lang]}</li>
+              ))}
+            </ul>
+          </li>
+        ))
+      }
+    </ol>
+  </div>
+</section>
+
+<style>
+  .git-cmd {
+    margin-top: 12px;
+    font-size: 0.8125rem;
+    color: var(--text-dim);
+  }
+
+  .log {
+    position: relative;
+    display: grid;
+    gap: 12px;
+    padding: 0;
+    list-style: none;
+  }
+
+  .log::before {
+    content: '';
+    position: absolute;
+    left: 7px;
+    top: 14px;
+    bottom: 14px;
+    width: 2px;
+    background: linear-gradient(var(--accent), var(--line) 30%);
+  }
+
+  .commit {
+    position: relative;
+    padding: 18px 22px 20px;
+    margin-left: 32px;
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    background: var(--bg-elev);
+    transition: border-color 0.2s;
+  }
+
+  .commit:hover {
+    border-color: var(--line-strong);
+  }
+
+  .commit::before {
+    content: '';
+    position: absolute;
+    left: -32px;
+    top: 22px;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    border: 2px solid var(--text-dim);
+    background: var(--bg);
+    translate: 3px 0;
+  }
+
+  .commit.is-current::before {
+    border-color: var(--accent);
+    background: var(--accent);
+    box-shadow: 0 0 0 4px var(--accent-soft);
+  }
+
+  .commit-meta {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 4px 10px;
+    font-size: 0.8125rem;
+  }
+
+  .commit-date {
+    margin-inline-start: auto;
+    color: var(--text-dim);
+  }
+
+  .commit-title {
+    margin-top: 8px;
+    font-size: 1.1875rem;
+    font-weight: 620;
+    letter-spacing: -0.01em;
+  }
+
+  .commit-at {
+    color: var(--text-muted);
+    font-weight: 450;
+  }
+
+  .commit-body {
+    display: grid;
+    gap: 6px;
+    margin-top: 12px;
+    color: var(--text-muted);
+  }
+
+  .commit-body li {
+    position: relative;
+    padding-inline-start: 20px;
+  }
+
+  .commit-body li::before {
+    content: '+';
+    position: absolute;
+    left: 0;
+    font-family: var(--font-mono);
+    color: var(--green);
+  }
+
+  @media (max-width: 560px) {
+    .commit {
+      margin-left: 24px;
+      padding: 16px;
+    }
+
+    .commit::before {
+      left: -24px;
+    }
+
+    .commit-date {
+      margin-inline-start: 0;
+      width: 100%;
+    }
+  }
+</style>

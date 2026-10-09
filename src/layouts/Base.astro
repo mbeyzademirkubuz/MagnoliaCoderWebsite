@@ -1,0 +1,85 @@
+---
+import '@fontsource-variable/inter';
+import '@fontsource-variable/jetbrains-mono';
+import '../styles/global.css';
+import type { Lang } from '../data/content';
+import { profile, socials } from '../data/content';
+import { useT } from '../i18n/ui';
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const t = useT(lang);
+const site = Astro.site!;
+const canonical = new URL(lang === 'en' ? '/' : '/tr/', site).href;
+const ogImage = new URL('/images/og-image.jpg', site).href;
+
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'Person',
+  name: profile.name,
+  jobTitle: profile.role[lang],
+  worksFor: { '@type': 'Organization', name: 'Matriks Financial Technologies' },
+  alumniOf: [
+    { '@type': 'CollegeOrUniversity', name: 'Marmara University' },
+    { '@type': 'CollegeOrUniversity', name: 'University of Milan' },
+  ],
+  knowsAbout: ['Large Language Models', 'Retrieval-Augmented Generation', 'Multi-agent systems', 'Model Context Protocol', '.NET'],
+  url: site.href,
+  image: new URL('/images/profile.jpg', site).href,
+  sameAs: socials.map((s) => s.url),
+};
+---
+
+<!doctype html>
+<html lang={lang}>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{t('meta.title')}</title>
+    <meta name="description" content={t('meta.description')} />
+    <meta name="author" content={profile.name} />
+    <link rel="canonical" href={canonical} />
+    <link rel="alternate" hreflang="en" href={new URL('/', site).href} />
+    <link rel="alternate" hreflang="tr" href={new URL('/tr/', site).href} />
+    <link rel="alternate" hreflang="x-default" href={new URL('/', site).href} />
+
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <meta name="theme-color" content="#0b1020" />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:title" content={t('meta.title')} />
+    <meta property="og:description" content={t('meta.description')} />
+    <meta property="og:image" content={ogImage} />
+    <meta property="og:locale" content={lang === 'en' ? 'en_US' : 'tr_TR'} />
+    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:site" content="@fdearmagnolia" />
+
+    <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
+
+    <script is:inline>
+      (() => {
+        const root = document.documentElement;
+        root.classList.add('js');
+        let theme;
+        try { theme = localStorage.getItem('theme'); } catch {}
+        if (theme !== 'light' && theme !== 'dark') {
+          theme = matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark';
+        }
+        root.dataset.theme = theme;
+        document.querySelector('meta[name="theme-color"]')
+          ?.setAttribute('content', theme === 'light' ? '#f8f2e4' : '#0b1020');
+      })();
+    </script>
+  </head>
+  <body>
+    <slot />
+    <script>
+      import '../scripts/main.ts';
+    </script>
+  </body>
+</html>

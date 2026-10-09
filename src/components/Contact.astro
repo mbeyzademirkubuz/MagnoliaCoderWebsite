@@ -1,0 +1,196 @@
+---
+import type { Lang } from '../data/content';
+import { profile, socials } from '../data/content';
+import { useT } from '../i18n/ui';
+import Icon from './Icon.astro';
+import SectionHead from './SectionHead.astro';
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const t = useT(lang);
+const year = new Date().getFullYear();
+---
+
+<section id="contact" class="section contact" aria-labelledby="contact-title">
+  <div class="container">
+    <SectionHead num="06" path={`${t('nav.contact')}.sh`} title={t('contact.title')} id="contact">
+      <p class="contact-lead">{t('contact.lead')}</p>
+    </SectionHead>
+
+    <div class="window contact-term reveal">
+      <div class="window-bar">
+        <div class="dots"><span></span><span></span><span></span></div>
+        <span>zsh — {profile.handle}@magnolia</span>
+      </div>
+      <div class="term-body mono">
+        <div class="term-line">
+          <span class="tok-punc">$</span>
+          <span class="tok-key">mail</span>
+          <a class="term-email tok-str" href={`mailto:${profile.email}`}>{profile.email}</a>
+          <button
+            class="copy-btn"
+            type="button"
+            data-copy={profile.email}
+            data-label-copy={t('contact.copy')}
+            data-label-copied={t('contact.copied')}
+          >
+            <Icon name="copy" class="icon copy-icon" />
+            <Icon name="check" class="icon check-icon" />
+            <span class="copy-label">{t('contact.copy')}</span>
+          </button>
+        </div>
+        <div class="term-line term-dim">
+          <span class="tok-com"># {lang === 'en' ? 'or find me here' : 'ya da buradan ulaşın'}</span>
+        </div>
+        <ul class="term-links">
+          {
+            socials.map((s) => (
+              <li>
+                <a href={s.url} target="_blank" rel="noopener noreferrer">
+                  <Icon name={s.id as 'github'} />
+                  <span class="term-link-label">{s.label}</span>
+                  <span class="term-link-handle">{s.handle}</span>
+                </a>
+              </li>
+            ))
+          }
+        </ul>
+      </div>
+    </div>
+
+    <div class="site-footer mono">
+      <span>© {year} MagnoliaCoder · {profile.name}</span>
+      <span>{t('footer.built')}</span>
+    </div>
+  </div>
+</section>
+
+<style>
+  .contact :global(.section-title) {
+    font-size: clamp(2rem, 5vw, 3.25rem);
+  }
+
+  .contact-lead {
+    max-width: 56ch;
+    margin-top: 14px;
+    font-size: 1.0625rem;
+    color: var(--text-muted);
+  }
+
+  .contact-term {
+    max-width: 760px;
+  }
+
+  .term-body {
+    padding: 22px;
+    font-size: 0.9375rem;
+  }
+
+  .term-line {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .term-email {
+    overflow-wrap: anywhere;
+    border-bottom: 1px dashed transparent;
+  }
+
+  .term-email:hover {
+    border-color: currentColor;
+  }
+
+  .copy-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    height: 30px;
+    padding-inline: 10px;
+    margin-inline-start: auto;
+    border: 1px solid var(--line-strong);
+    border-radius: var(--radius-sm);
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    transition: all 0.15s;
+  }
+
+  .copy-btn:hover {
+    color: var(--text);
+    border-color: var(--text-dim);
+  }
+
+  .copy-btn :global(.check-icon) {
+    display: none;
+  }
+
+  .copy-btn.is-copied {
+    color: var(--green);
+    border-color: var(--green);
+  }
+
+  .copy-btn.is-copied :global(.check-icon) {
+    display: block;
+  }
+
+  .copy-btn.is-copied :global(.copy-icon) {
+    display: none;
+  }
+
+  .term-dim {
+    margin-top: 18px;
+    font-size: 0.8125rem;
+  }
+
+  .term-links {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 210px), 1fr));
+    gap: 8px;
+    margin-top: 12px;
+  }
+
+  .term-links a {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 12px;
+    border: 1px solid var(--line);
+    border-radius: var(--radius-sm);
+    font-size: 0.8125rem;
+    transition: border-color 0.15s, background-color 0.15s;
+  }
+
+  .term-links a:hover {
+    border-color: var(--accent);
+    background: var(--bg-hover);
+  }
+
+  .term-links :global(.icon) {
+    color: var(--accent);
+  }
+
+  .term-link-handle {
+    margin-inline-start: auto;
+    color: var(--text-dim);
+    font-size: 0.75rem;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .site-footer {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 8px 24px;
+    margin-top: clamp(64px, 10vw, 96px);
+    padding-top: 24px;
+    border-top: 1px solid var(--line);
+    font-size: 0.75rem;
+    color: var(--text-dim);
+  }
+</style>

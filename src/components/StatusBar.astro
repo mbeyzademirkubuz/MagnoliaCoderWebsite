@@ -1,0 +1,135 @@
+---
+import type { Lang } from '../data/content';
+import { profile } from '../data/content';
+import { langPath, useT } from '../i18n/ui';
+import Icon from './Icon.astro';
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const t = useT(lang);
+const langs: Lang[] = ['en', 'tr'];
+---
+
+<div class="statusbar mono">
+  <div class="sb-group">
+    <span class="sb-item sb-branch"><Icon name="branch" /> main</span>
+    <span class="sb-item sb-hide-sm"><Icon name="pin" /> {profile.location[lang]}</span>
+  </div>
+
+  <div class="sb-group">
+    <span class="sb-item sb-hide-sm">UTF-8</span>
+    <div class="sb-item sb-lang" role="group" aria-label={t('status.lang')}>
+      <Icon name="globe" />
+      {
+        langs.map((l) => (
+          <a
+            href={langPath(l)}
+            hreflang={l}
+            lang={l}
+            class:list={['sb-lang-link', { 'is-current': l === lang }]}
+            aria-current={l === lang ? 'page' : undefined}
+            data-lang-link
+          >
+            {l.toUpperCase()}
+          </a>
+        ))
+      }
+    </div>
+    <button class="sb-item sb-btn" type="button" data-theme-toggle aria-label={t('status.theme')}>
+      <Icon name="moon" class="icon theme-icon-dark" />
+      <Icon name="sun" class="icon theme-icon-light" />
+    </button>
+    <button class="sb-item sb-btn" type="button" data-open-palette aria-label={t('status.palette')}>
+      <Icon name="command" /> K
+    </button>
+  </div>
+</div>
+
+<style>
+  .statusbar {
+    position: fixed;
+    inset-inline: 0;
+    bottom: 0;
+    z-index: 50;
+    display: flex;
+    justify-content: space-between;
+    align-items: stretch;
+    height: calc(var(--status-h) + env(safe-area-inset-bottom, 0px));
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+    padding-inline: 8px;
+    background: var(--bg-panel);
+    border-top: 1px solid var(--line);
+    font-size: 0.75rem;
+    color: var(--text-muted);
+  }
+
+  .sb-group {
+    display: flex;
+    align-items: stretch;
+  }
+
+  .sb-item {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding-inline: 10px;
+    white-space: nowrap;
+  }
+
+  .sb-branch {
+    color: var(--accent);
+  }
+
+  .sb-btn {
+    transition: background-color 0.15s, color 0.15s;
+  }
+
+  .sb-btn:hover {
+    background: var(--bg-hover);
+    color: var(--text);
+  }
+
+  .sb-lang {
+    gap: 2px;
+  }
+
+  .sb-lang :global(.icon) {
+    margin-inline-end: 4px;
+  }
+
+  .sb-lang-link {
+    padding: 1px 5px;
+    border-radius: 4px;
+    color: var(--text-dim);
+  }
+
+  .sb-lang-link:hover {
+    color: var(--text);
+  }
+
+  .sb-lang-link.is-current {
+    color: var(--bg);
+    background: var(--accent);
+  }
+
+  .sb-btn :global(.theme-icon-light) {
+    display: none;
+  }
+
+  :global([data-theme='light']) .sb-btn :global(.theme-icon-light) {
+    display: block;
+  }
+
+  :global([data-theme='light']) .sb-btn :global(.theme-icon-dark) {
+    display: none;
+  }
+
+  @media (max-width: 560px) {
+    .sb-hide-sm {
+      display: none;
+    }
+  }
+</style>

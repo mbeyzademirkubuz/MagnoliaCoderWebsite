@@ -1,0 +1,190 @@
+---
+import type { Lang } from '../data/content';
+import { projects, socials } from '../data/content';
+import { useT } from '../i18n/ui';
+import Icon from './Icon.astro';
+import SectionHead from './SectionHead.astro';
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const t = useT(lang);
+const filters = ['all', 'ai', 'dotnet', 'web'] as const;
+const github = socials.find((s) => s.id === 'github')!;
+---
+
+<section id="projects" class="section" aria-labelledby="projects-title">
+  <div class="container">
+    <SectionHead num="03" path={`${t('nav.projects')}/`} title={t('projects.title')} id="projects" />
+
+    <div class="filters mono reveal" role="group" aria-label="Filter">
+      <span class="filters-cmd" aria-hidden="true"><span class="tok-punc">$</span> ls --filter=</span>
+      {
+        filters.map((f) => (
+          <button type="button" class="filter" data-filter={f} aria-pressed={f === 'all' ? 'true' : 'false'}>
+            {t(`projects.${f}`)}
+          </button>
+        ))
+      }
+    </div>
+
+    <ul class="project-grid">
+      {
+        projects.map((p) => (
+          <li class="project reveal" data-category={p.category}>
+            <a class="project-link" href={p.repo} target="_blank" rel="noopener noreferrer">
+              <div class="project-top mono">
+                <Icon name="folder" class="icon project-folder" />
+                <span>{p.slug}/</span>
+                <Icon name="arrow" class="icon project-arrow" />
+              </div>
+              <h3 class="project-name">{p.name}</h3>
+              <p class="project-desc">{p.description[lang]}</p>
+              <ul class="project-tags mono" aria-label="Tech">
+                {p.tags.map((tag) => (
+                  <li>{tag}</li>
+                ))}
+              </ul>
+              <span class="visually-hidden">{t('projects.source')} (GitHub)</span>
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+
+    <a class="more-link mono reveal" href={github.url} target="_blank" rel="noopener noreferrer">
+      <Icon name="github" />
+      {t('projects.more')}
+      <Icon name="arrow" />
+    </a>
+  </div>
+</section>
+
+<style>
+  .filters {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 6px;
+    margin-bottom: 28px;
+    font-size: 0.8125rem;
+  }
+
+  .filters-cmd {
+    color: var(--text-dim);
+    margin-inline-end: 4px;
+  }
+
+  .filter {
+    padding: 6px 12px;
+    border: 1px solid var(--line);
+    border-radius: var(--radius-sm);
+    color: var(--text-muted);
+    transition: all 0.15s;
+  }
+
+  .filter:hover {
+    color: var(--text);
+    border-color: var(--line-strong);
+  }
+
+  .filter[aria-pressed='true'] {
+    color: var(--bg);
+    background: var(--accent);
+    border-color: var(--accent);
+  }
+
+  .project-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 300px), 1fr));
+    gap: 16px;
+  }
+
+  .project[hidden] {
+    display: none;
+  }
+
+  .project-link {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    padding: 20px 22px 22px;
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    background: var(--bg-elev);
+    transition: border-color 0.2s, transform 0.2s, background-color 0.2s;
+  }
+
+  .project-link:hover {
+    border-color: var(--accent);
+    transform: translateY(-3px);
+  }
+
+  .project-top {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.75rem;
+    color: var(--text-dim);
+  }
+
+  .project-top :global(.project-folder) {
+    color: var(--accent);
+  }
+
+  .project-top :global(.project-arrow) {
+    margin-inline-start: auto;
+    transition: transform 0.2s, color 0.2s;
+  }
+
+  .project-link:hover :global(.project-arrow) {
+    color: var(--accent);
+    transform: translate(2px, -2px);
+  }
+
+  .project-name {
+    margin-top: 14px;
+    font-size: 1.125rem;
+    font-weight: 620;
+    letter-spacing: -0.01em;
+  }
+
+  .project-desc {
+    margin-top: 8px;
+    color: var(--text-muted);
+    font-size: 0.9375rem;
+    flex: 1;
+  }
+
+  .project-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px 14px;
+    margin-top: 18px;
+    font-size: 0.75rem;
+    color: var(--green);
+  }
+
+  .project-tags li::before {
+    content: '#';
+    color: var(--text-dim);
+  }
+
+  .more-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 28px;
+    font-size: 0.875rem;
+    color: var(--text-muted);
+    border-bottom: 1px dashed var(--line-strong);
+    padding-bottom: 2px;
+  }
+
+  .more-link:hover {
+    color: var(--accent);
+    border-color: var(--accent);
+  }
+</style>
