@@ -20,10 +20,11 @@ const t = useT(lang);
       </p>
     </SectionHead>
 
-    <ol class="log">
+    <ol class="log" data-log>
       {
         experience.map((job) => (
-          <li class:list={['commit reveal', { 'is-current': job.current }]}>
+          <li class:list={['commit spotlight reveal', { 'is-current': job.current }]}>
+            <span class="commit-dot" aria-hidden="true" />
             <div class="commit-meta mono">
               <span class="tok-acc">commit {job.hash}</span>
               {job.current && (
@@ -64,14 +65,23 @@ const t = useT(lang);
     list-style: none;
   }
 
-  .log::before {
+  .log::before,
+  .log::after {
     content: '';
     position: absolute;
     left: 7px;
     top: 14px;
     bottom: 14px;
     width: 2px;
-    background: linear-gradient(var(--accent), var(--line) 30%);
+    border-radius: 2px;
+    background: var(--line);
+  }
+
+  /* drawn progressively as the log scrolls into view (--draw set in JS) */
+  .log::after {
+    background: linear-gradient(var(--accent), var(--pink));
+    transform-origin: top;
+    transform: scaleY(var(--draw, 1));
   }
 
   .commit {
@@ -88,8 +98,7 @@ const t = useT(lang);
     border-color: var(--line-strong);
   }
 
-  .commit::before {
-    content: '';
+  .commit-dot {
     position: absolute;
     left: -32px;
     top: 22px;
@@ -101,10 +110,20 @@ const t = useT(lang);
     translate: 3px 0;
   }
 
-  .commit.is-current::before {
+  .commit.is-current .commit-dot {
+    animation: pulse 2.4s ease-out infinite;
     border-color: var(--accent);
     background: var(--accent);
     box-shadow: 0 0 0 4px var(--accent-soft);
+  }
+
+  @keyframes pulse {
+    0% { box-shadow: 0 0 0 0 color-mix(in srgb, var(--accent) 55%, transparent); }
+    70%, 100% { box-shadow: 0 0 0 10px transparent; }
+  }
+
+  .commit-dot {
+    z-index: 2;
   }
 
   .commit-meta {
@@ -158,7 +177,7 @@ const t = useT(lang);
       padding: 16px;
     }
 
-    .commit::before {
+    .commit-dot {
       left: -24px;
     }
 

@@ -77,9 +77,11 @@ const jsonLd = {
     </script>
   </head>
   <body>
+    <div class="cursor-glow" aria-hidden="true"></div>
     <slot />
     <script>
       import '../scripts/main.ts';
+      import '../scripts/motion.ts';
     </script>
   </body>
 </html>

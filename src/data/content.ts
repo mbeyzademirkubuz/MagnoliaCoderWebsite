@@ -13,6 +13,10 @@ export const profile = {
   role: { en: 'Senior AI Specialist', tr: 'Kıdemli Yapay Zekâ Uzmanı' } as T,
   company: 'Matriks',
   focus: ['LLMs', 'RAG', 'Multi-agent', 'MCP', '.NET'],
+  building: {
+    en: ['LLM chatbots', 'RAG pipelines', 'MCP servers', 'multi-agent systems', 'semantic search'],
+    tr: ['LLM sohbet botları', 'RAG altyapıları', 'MCP sunucuları', 'çoklu ajan sistemleri', 'anlamsal arama'],
+  } as Record<Lang, string[]>,
   tagline: {
     en: 'I lead an AI engineering team building LLM-powered products for financial technology: chatbots, MCP servers and semantic search.',
     tr: 'Finansal teknoloji için LLM tabanlı ürünler geliştiren bir yapay zekâ mühendisliği ekibine liderlik ediyorum: sohbet botları, MCP sunucuları ve anlamsal arama.',
