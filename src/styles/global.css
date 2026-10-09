@@ -285,17 +285,189 @@ ul {
 .tok-com { color: var(--text-dim); font-style: italic; }
 .tok-acc { color: var(--accent); }
 
-/* ---------- Reveal on scroll ---------- */
+/* ---------- Reveal on scroll (staggered via --i set in JS) ---------- */
 
 .js .reveal {
   opacity: 0;
-  transform: translateY(16px);
-  transition: opacity 0.6s ease, transform 0.6s ease;
+  transform: translateY(22px);
+  filter: blur(4px);
+  transition:
+    opacity 0.7s ease,
+    transform 0.7s cubic-bezier(0.2, 0.7, 0.2, 1),
+    filter 0.7s ease;
+  transition-delay: calc(var(--i, 0) * 70ms);
 }
 
 .js .reveal.is-visible {
   opacity: 1;
   transform: none;
+  filter: none;
+}
+
+/* Section titles get an accent underline that draws in */
+.section-title::after {
+  content: '';
+  display: block;
+  width: 48px;
+  height: 3px;
+  margin-top: 14px;
+  border-radius: 2px;
+  background: linear-gradient(90deg, var(--accent), var(--pink));
+  transform-origin: left;
+  transition: transform 0.9s cubic-bezier(0.2, 0.7, 0.2, 1) 0.2s;
+}
+
+.js .reveal:not(.is-visible) .section-title::after {
+  transform: scaleX(0);
+}
+
+/* ---------- Pointer effects ---------- */
+
+/* Soft light that follows the cursor */
+.cursor-glow {
+  position: fixed;
+  left: 0;
+  top: 0;
+  z-index: -1;
+  width: 520px;
+  height: 520px;
+  margin: -260px 0 0 -260px;
+  border-radius: 50%;
+  pointer-events: none;
+  background: radial-gradient(
+    circle,
+    color-mix(in srgb, var(--accent) 16%, transparent) 0%,
+    color-mix(in srgb, var(--pink) 6%, transparent) 35%,
+    transparent 65%
+  );
+  opacity: 0;
+  transition: opacity 0.4s ease;
+  will-change: transform;
+}
+
+[data-theme='light'] .cursor-glow {
+  background: radial-gradient(
+    circle,
+    color-mix(in srgb, var(--accent) 12%, transparent) 0%,
+    transparent 60%
+  );
+}
+
+.cursor-glow.is-on {
+  opacity: 1;
+}
+
+/* Tiny sparkles left behind while the cursor moves */
+.sparkle {
+  position: fixed;
+  z-index: 90;
+  width: 6px;
+  height: 6px;
+  margin: -3px 0 0 -3px;
+  pointer-events: none;
+  border-radius: 50%;
+  background: var(--accent);
+  box-shadow: 0 0 8px 1px var(--accent);
+  animation: sparkle 0.9s ease-out forwards;
+}
+
+.sparkle.is-pink {
+  background: var(--pink);
+  box-shadow: 0 0 8px 1px var(--pink);
+}
+
+@keyframes sparkle {
+  0% {
+    opacity: 0.9;
+    transform: translate(0, 0) scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: translate(var(--dx), var(--dy)) scale(0.2);
+  }
+}
+
+/* Cards: a border highlight that tracks the pointer */
+.spotlight {
+  position: relative;
+}
+
+.spotlight::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  border-radius: inherit;
+  padding: 1px;
+  pointer-events: none;
+  background: radial-gradient(
+    320px circle at var(--x, 50%) var(--y, 50%),
+    color-mix(in srgb, var(--accent) 80%, transparent),
+    transparent 60%
+  );
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask: linear-gradient(#000 0 0) content-box exclude, linear-gradient(#000 0 0);
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+
+.spotlight::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  background: radial-gradient(
+    400px circle at var(--x, 50%) var(--y, 50%),
+    color-mix(in srgb, var(--accent) 7%, transparent),
+    transparent 55%
+  );
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+
+.spotlight:hover::before,
+.spotlight:hover::after {
+  opacity: 1;
+}
+
+/* Primary button: a light sweep on hover */
+.btn-primary {
+  position: relative;
+  overflow: hidden;
+}
+
+.btn-primary::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(110deg, transparent 30%, rgb(255 255 255 / 0.45) 50%, transparent 70%);
+  transform: translateX(-120%);
+}
+
+.btn-primary:hover::after {
+  transition: transform 0.7s ease;
+  transform: translateX(120%);
+}
+
+/* Reading progress line under the header */
+.scroll-progress {
+  position: absolute;
+  left: 0;
+  bottom: -1px;
+  height: 2px;
+  width: 100%;
+  background: linear-gradient(90deg, var(--accent), var(--pink), var(--green));
+  transform-origin: left;
+  transform: scaleX(var(--progress, 0));
+}
+
+@media (hover: none), (pointer: coarse) {
+  .cursor-glow,
+  .sparkle {
+    display: none;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -314,5 +486,11 @@ ul {
   .js .reveal {
     opacity: 1;
     transform: none;
+    filter: none;
+  }
+
+  .cursor-glow,
+  .sparkle {
+    display: none;
   }
 }

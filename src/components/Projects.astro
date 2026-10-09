@@ -34,7 +34,7 @@ const github = socials.find((s) => s.id === 'github')!;
       {
         projects.map((p) => (
           <li class="project reveal" data-category={p.category}>
-            <a class="project-link" href={p.repo} target="_blank" rel="noopener noreferrer">
+            <a class="project-link spotlight" href={p.repo} target="_blank" rel="noopener noreferrer">
               <div class="project-top mono">
                 <Icon name="folder" class="icon project-folder" />
                 <span>{p.slug}/</span>

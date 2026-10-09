@@ -20,6 +20,7 @@ const langs: Lang[] = ['en', 'tr'];
   </div>
 
   <div class="sb-group">
+    <span class="sb-item sb-hide-sm sb-pos" aria-hidden="true">Ln <span data-ln>1</span>, Col <span data-col>1</span></span>
     <span class="sb-item sb-hide-sm">UTF-8</span>
     <div class="sb-item sb-lang" role="group" aria-label={t('status.lang')}>
       <Icon name="globe" />
@@ -77,6 +78,10 @@ const langs: Lang[] = ['en', 'tr'];
     gap: 6px;
     padding-inline: 10px;
     white-space: nowrap;
+  }
+
+  .sb-pos {
+    font-variant-numeric: tabular-nums;
   }
 
   .sb-branch {
