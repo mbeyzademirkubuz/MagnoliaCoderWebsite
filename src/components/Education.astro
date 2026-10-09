@@ -1,0 +1,149 @@
+---
+import type { Lang } from '../data/content';
+import { education, research } from '../data/content';
+import { useT } from '../i18n/ui';
+import Icon from './Icon.astro';
+import SectionHead from './SectionHead.astro';
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const t = useT(lang);
+---
+
+<section id="education" class="section" aria-labelledby="education-title">
+  <div class="container">
+    <SectionHead num="04" path={`${t('nav.education')}.yml`} title={t('education.title')} id="education" />
+
+    <ul class="edu-grid">
+      {
+        education.map((e) => (
+          <li class="card reveal">
+            <div class="card-icon is-edu">
+              <Icon name="cap" />
+            </div>
+            <div class="card-main">
+              <p class="card-date mono">
+                {e.date[lang]}
+                {'current' in e && e.current && <span class="chip card-badge">{t('education.current')}</span>}
+              </p>
+              <h3 class="card-title">{e.school[lang]}</h3>
+              <p class="card-sub">{e.degree[lang]}</p>
+              <ul class="card-notes mono">
+                {e.notes.map((n) => (
+                  <li class="tok-com"># {n[lang]}</li>
+                ))}
+              </ul>
+            </div>
+          </li>
+        ))
+      }
+    </ul>
+
+    <h3 class="sub-head mono reveal">
+      <span class="tok-acc">-</span>
+      {t('education.research')}<span class="tok-punc">:</span>
+    </h3>
+
+    <ul class="edu-grid">
+      {
+        research.map((r) => (
+          <li class="card reveal">
+            <div class="card-icon is-award">
+              <Icon name="trophy" />
+            </div>
+            <div class="card-main">
+              <p class="card-date mono">{r.date}</p>
+              <h3 class="card-title">{r.title[lang]}</h3>
+              <p class="card-sub">{r.description[lang]}</p>
+            </div>
+          </li>
+        ))
+      }
+    </ul>
+  </div>
+</section>
+
+<style>
+  .edu-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 340px), 1fr));
+    gap: 16px;
+  }
+
+  .card {
+    display: flex;
+    gap: 18px;
+    padding: 22px;
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    background: var(--bg-elev);
+  }
+
+  .card-main {
+    min-width: 0;
+  }
+
+  .card-icon {
+    --tint: var(--pink);
+    display: grid;
+    place-items: center;
+    flex: none;
+    width: 44px;
+    height: 44px;
+    border-radius: var(--radius-sm);
+    background: color-mix(in srgb, var(--tint) 14%, transparent);
+    color: var(--tint);
+  }
+
+  .card-icon.is-award {
+    --tint: var(--accent);
+  }
+
+  .card-icon :global(.icon) {
+    width: 22px;
+    height: 22px;
+  }
+
+  .card-date {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 0.75rem;
+    color: var(--text-dim);
+  }
+
+  .card-badge {
+    padding-block: 0;
+    color: var(--green);
+    border-color: color-mix(in srgb, var(--green) 40%, transparent);
+    background: transparent;
+  }
+
+  .card-title {
+    margin-top: 4px;
+    font-size: 1.125rem;
+    font-weight: 620;
+    letter-spacing: -0.01em;
+  }
+
+  .card-sub {
+    color: var(--text-muted);
+  }
+
+  .card-notes {
+    display: grid;
+    gap: 4px;
+    margin-top: 10px;
+    font-size: 0.8125rem;
+  }
+
+  .sub-head {
+    margin: 40px 0 16px;
+    font-size: 0.9375rem;
+    font-weight: 500;
+    color: var(--text-muted);
+  }
+</style>

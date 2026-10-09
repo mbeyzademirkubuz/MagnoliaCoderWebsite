@@ -1,0 +1,239 @@
+---
+import type { Lang } from '../data/content';
+import { beyond, profile, socials } from '../data/content';
+import { altLang, langPath, sections, useT } from '../i18n/ui';
+import Icon, { type IconName } from './Icon.astro';
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const t = useT(lang);
+
+type Item = { label: string; action: string; icon: IconName; hint?: string };
+
+const groups: { title: string; items: Item[] }[] = [
+  {
+    title: t('palette.goto'),
+    items: sections.map((s) => ({
+      label: `${t(`nav.${s.id}`)}${s.ext}`,
+      action: `goto:#${s.id}`,
+      icon: 'file',
+    })),
+  },
+  {
+    title: t('palette.actions'),
+    items: [
+      { label: t('palette.theme'), action: 'theme', icon: 'sun' },
+      { label: t('palette.lang'), action: `nav:${langPath(altLang(lang))}`, icon: 'globe' },
+      { label: t('palette.copyEmail'), action: `copy:${profile.email}`, icon: 'copy' },
+      { label: t('palette.cv'), action: `download:${profile.cv}`, icon: 'download' },
+    ],
+  },
+  {
+    title: t('palette.links'),
+    items: [
+      ...socials.map((s) => ({ label: s.label, action: `open:${s.url}`, icon: s.id as IconName, hint: s.handle })),
+      { label: 'fromdearmagnolia.com', action: `open:${beyond[0].url}`, icon: 'pen' as IconName },
+    ],
+  },
+];
+---
+
+<dialog class="palette" id="palette" aria-label={t('status.palette')}>
+  <div class="palette-search">
+    <Icon name="terminal" />
+    <input
+      type="text"
+      class="palette-input"
+      placeholder={t('palette.placeholder')}
+      autocomplete="off"
+      spellcheck="false"
+      role="combobox"
+      aria-expanded="true"
+      aria-controls="palette-list"
+      aria-autocomplete="list"
+    />
+    <kbd class="mono">esc</kbd>
+  </div>
+
+  <div class="palette-list" id="palette-list" role="listbox">
+    {
+      groups.map((g, gi) => (
+        <div class="palette-group" role="group" aria-label={g.title}>
+          <p class="palette-group-title mono">{g.title}</p>
+          {g.items.map((item, ii) => (
+            <button
+              type="button"
+              class="palette-item"
+              id={`palette-item-${gi}-${ii}`}
+              role="option"
+              data-action={item.action}
+              tabindex="-1"
+            >
+              <Icon name={item.icon} />
+              <span class="palette-label">{item.label}</span>
+              {item.hint && <span class="palette-hint mono">{item.hint}</span>}
+              <Icon name="enter" class="icon palette-enter" />
+            </button>
+          ))}
+        </div>
+      ))
+    }
+    <p class="palette-empty mono" hidden>{t('palette.empty')}</p>
+  </div>
+
+  <div class="palette-foot mono">
+    <span><kbd>↑</kbd><kbd>↓</kbd> {t('palette.hint')}</span>
+  </div>
+</dialog>
+
+<style>
+  .palette {
+    width: min(600px, calc(100vw - 32px));
+    max-height: min(520px, calc(100vh - 120px));
+    margin: 12vh auto auto;
+    padding: 0;
+    border: 1px solid var(--line-strong);
+    border-radius: 12px;
+    background: var(--bg-elev);
+    color: var(--text);
+    box-shadow: 0 30px 80px -20px rgb(0 0 0 / 0.6);
+    overflow: hidden;
+  }
+
+  .palette[open] {
+    display: flex;
+    flex-direction: column;
+    animation: pop 0.16s ease-out;
+  }
+
+  .palette::backdrop {
+    background: rgb(5 8 18 / 0.55);
+    backdrop-filter: blur(3px);
+  }
+
+  @keyframes pop {
+    from {
+      opacity: 0;
+      transform: translateY(-8px) scale(0.98);
+    }
+  }
+
+  .palette-search {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 0 16px;
+    border-bottom: 1px solid var(--line);
+    color: var(--accent);
+  }
+
+  .palette-input {
+    flex: 1;
+    height: 52px;
+    border: 0;
+    outline: 0;
+    background: transparent;
+    color: var(--text);
+    font: inherit;
+    font-size: 1rem;
+  }
+
+  .palette-input::placeholder {
+    color: var(--text-dim);
+  }
+
+  .palette kbd {
+    padding: 2px 6px;
+    border: 1px solid var(--line);
+    border-radius: 4px;
+    font-size: 0.6875rem;
+    color: var(--text-dim);
+  }
+
+  .palette-list {
+    flex: 1;
+    overflow-y: auto;
+    padding: 8px;
+  }
+
+  .palette-group[hidden] {
+    display: none;
+  }
+
+  .palette-group-title {
+    padding: 10px 10px 6px;
+    font-size: 0.6875rem;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--text-dim);
+  }
+
+  .palette-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    width: 100%;
+    padding: 9px 10px;
+    border-radius: var(--radius-sm);
+    text-align: start;
+    font-size: 0.9375rem;
+    color: var(--text-muted);
+  }
+
+  .palette-item[hidden] {
+    display: none;
+  }
+
+  .palette-item.is-active {
+    background: var(--bg-hover);
+    color: var(--text);
+  }
+
+  .palette-item.is-active :global(.icon) {
+    color: var(--accent);
+  }
+
+  .palette-hint {
+    margin-inline-start: auto;
+    font-size: 0.75rem;
+    color: var(--text-dim);
+  }
+
+  .palette-item :global(.palette-enter) {
+    visibility: hidden;
+    color: var(--text-dim);
+  }
+
+  .palette-hint + :global(.palette-enter) {
+    margin-inline-start: 0;
+  }
+
+  .palette-label + :global(.palette-enter) {
+    margin-inline-start: auto;
+  }
+
+  .palette-item.is-active :global(.palette-enter) {
+    visibility: visible;
+  }
+
+  .palette-empty {
+    padding: 28px;
+    text-align: center;
+    color: var(--text-dim);
+    font-size: 0.875rem;
+  }
+
+  .palette-foot {
+    padding: 10px 16px;
+    border-top: 1px solid var(--line);
+    font-size: 0.75rem;
+    color: var(--text-dim);
+  }
+
+  .palette-foot kbd {
+    margin-inline-end: 3px;
+  }
+</style>

@@ -1,0 +1,107 @@
+---
+import type { Lang, T } from '../data/content';
+import { about, stack } from '../data/content';
+import { stackLabels, useT } from '../i18n/ui';
+import SectionHead from './SectionHead.astro';
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const t = useT(lang);
+
+const esc = (s: string) => s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+const str = (s: string | T) => `<span class="tok-str">"${esc(typeof s === 'string' ? s : s[lang])}"</span>`;
+const p = (s: string) => `<span class="tok-punc">${s}</span>`;
+
+const lines = [
+  `<span class="tok-com">// ${lang === 'en' ? 'things I work with' : 'kullandığım teknolojiler'}</span>`,
+  `<span class="tok-key">export const</span> <span class="tok-acc">stack</span> ${p('=')} ${p('{')}`,
+  ...stack.map(
+    (g) =>
+      `  <span class="tok-prop">${stackLabels[lang][g.key]}</span>${p(':')} ${p('[')}${g.items
+        .map(str)
+        .join(`${p(',')} `)}${p('],')}`,
+  ),
+  `${p('}')} <span class="tok-key">as const</span>${p(';')}`,
+];
+---
+
+<section id="about" class="section" aria-labelledby="about-title">
+  <div class="container">
+    <SectionHead num="01" path={`${t('nav.about')}.md`} title={t('about.title')} id="about" />
+
+    <div class="about-grid">
+      <div class="about-text reveal">
+        {about.map((para) => <p>{para[lang]}</p>)}
+      </div>
+
+      <div class="window code-window reveal" aria-label={t('about.stack')}>
+        <div class="window-bar">
+          <div class="dots"><span></span><span></span><span></span></div>
+          <span>stack.ts</span>
+        </div>
+        <pre class="code mono"><code>{lines.map((l) => <span class="line" set:html={l} />)}</code></pre>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .about-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr);
+    gap: clamp(32px, 5vw, 64px);
+    align-items: start;
+  }
+
+  .about-text {
+    display: grid;
+    gap: 18px;
+    font-size: 1.0625rem;
+    color: var(--text-muted);
+  }
+
+  .about-text p:first-child {
+    color: var(--text);
+  }
+
+  .code {
+    padding: 18px 0;
+    font-size: 0.8125rem;
+    line-height: 1.85;
+    overflow-x: auto;
+    counter-reset: line;
+  }
+
+  .code code {
+    display: block;
+  }
+
+  .line {
+    display: block;
+    padding-inline: 0 20px;
+    white-space: pre-wrap;
+    padding-inline-start: calc(4ch + 16px);
+    text-indent: calc(-4ch - 16px);
+  }
+
+  .line::before {
+    counter-increment: line;
+    content: counter(line);
+    display: inline-block;
+    width: 4ch;
+    margin-inline-end: 16px;
+    text-align: right;
+    color: var(--text-dim);
+    opacity: 0.6;
+    text-indent: 0;
+  }
+
+  @media (max-width: 860px) {
+    .about-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

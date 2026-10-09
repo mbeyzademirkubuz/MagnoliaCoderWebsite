@@ -1,0 +1,16 @@
+---
+interface Props {
+  num: string;
+  path: string;
+  title: string;
+  id: string;
+}
+
+const { num, path, title, id } = Astro.props;
+---
+
+<div class="section-head reveal">
+  <p class="section-path"><span class="num">{num}</span> // ~/beyza/{path}</p>
+  <h2 class="section-title" id={`${id}-title`}>{title}</h2>
+  <slot />
+</div>

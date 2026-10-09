@@ -1,0 +1,32 @@
+---
+import Base from '../layouts/Base.astro';
+---
+
+<Base lang="en">
+  <main class="nf container mono">
+    <p class="tok-com"># 404</p>
+    <h1><span class="tok-punc">$</span> cd <span class="tok-str">this-page</span></h1>
+    <p class="nf-err">zsh: no such file or directory</p>
+    <a class="btn btn-primary" href="/">cd ~</a>
+  </main>
+</Base>
+
+<style>
+  .nf {
+    display: grid;
+    align-content: center;
+    justify-items: start;
+    gap: 16px;
+    min-height: 90vh;
+  }
+
+  h1 {
+    font-size: clamp(1.75rem, 5vw, 3rem);
+    font-weight: 600;
+  }
+
+  .nf-err {
+    color: var(--pink);
+    margin-bottom: 12px;
+  }
+</style>

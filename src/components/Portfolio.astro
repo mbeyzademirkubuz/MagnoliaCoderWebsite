@@ -1,0 +1,35 @@
+---
+import type { Lang } from '../data/content';
+import Base from '../layouts/Base.astro';
+import About from './About.astro';
+import Beyond from './Beyond.astro';
+import CommandPalette from './CommandPalette.astro';
+import Contact from './Contact.astro';
+import Education from './Education.astro';
+import Experience from './Experience.astro';
+import Header from './Header.astro';
+import Hero from './Hero.astro';
+import Projects from './Projects.astro';
+import StatusBar from './StatusBar.astro';
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+---
+
+<Base lang={lang}>
+  <Header lang={lang} />
+  <main id="main">
+    <Hero lang={lang} />
+    <About lang={lang} />
+    <Experience lang={lang} />
+    <Projects lang={lang} />
+    <Education lang={lang} />
+    <Beyond lang={lang} />
+    <Contact lang={lang} />
+  </main>
+  <StatusBar lang={lang} />
+  <CommandPalette lang={lang} />
+</Base>

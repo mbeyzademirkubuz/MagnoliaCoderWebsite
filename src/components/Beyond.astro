@@ -1,0 +1,154 @@
+---
+import type { Lang } from '../data/content';
+import { beyond } from '../data/content';
+import { useT } from '../i18n/ui';
+import Icon from './Icon.astro';
+import SectionHead from './SectionHead.astro';
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const t = useT(lang);
+const icons = { writing: 'pen', youtube: 'youtube' } as const;
+---
+
+<section id="beyond" class="section" aria-labelledby="beyond-title">
+  <div class="container">
+    <SectionHead num="05" path={`${t('nav.beyond')}.md`} title={t('beyond.title')} id="beyond">
+      <p class="beyond-lead">{t('beyond.lead')}</p>
+    </SectionHead>
+
+    <ul class="beyond-grid">
+      {
+        beyond.map((b) => (
+          <li class:list={['beyond-card reveal', `is-${b.id}`]}>
+            <a href={b.url} target="_blank" rel="noopener noreferrer" class="beyond-link">
+              <div class="window-bar">
+                <div class="dots">
+                  <span />
+                  <span />
+                  <span />
+                </div>
+                <span>{b.file}</span>
+              </div>
+              <div class="beyond-body">
+                <div class="beyond-head">
+                  <span class="beyond-icon">
+                    <Icon name={icons[b.id as keyof typeof icons]} />
+                  </span>
+                  <h3>{b.title[lang]}</h3>
+                  <span class="chip beyond-badge">{b.badge[lang]}</span>
+                </div>
+                <p class="beyond-desc">{b.description[lang]}</p>
+                <span class="beyond-cta mono">
+                  {b.cta[lang]} <Icon name="arrow" />
+                </span>
+              </div>
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+  </div>
+</section>
+
+<style>
+  .beyond-lead {
+    margin-top: 10px;
+    color: var(--text-muted);
+  }
+
+  .beyond-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 340px), 1fr));
+    gap: 16px;
+  }
+
+  .beyond-card {
+    --tint: var(--pink);
+  }
+
+  .beyond-card.is-youtube {
+    --tint: #e5534b;
+  }
+
+  .beyond-link {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    background: var(--bg-elev);
+    overflow: hidden;
+    transition: border-color 0.2s, transform 0.2s;
+  }
+
+  .beyond-link:hover {
+    border-color: var(--tint);
+    transform: translateY(-3px);
+  }
+
+  .beyond-body {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    padding: 22px;
+    background: radial-gradient(120% 80% at 100% 0%, color-mix(in srgb, var(--tint) 10%, transparent), transparent 60%);
+  }
+
+  .beyond-head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .beyond-head h3 {
+    font-size: 1.25rem;
+    font-weight: 650;
+    letter-spacing: -0.015em;
+  }
+
+  .beyond-icon {
+    display: grid;
+    place-items: center;
+    width: 40px;
+    height: 40px;
+    border-radius: var(--radius-sm);
+    background: color-mix(in srgb, var(--tint) 15%, transparent);
+    color: var(--tint);
+  }
+
+  .beyond-icon :global(.icon) {
+    width: 20px;
+    height: 20px;
+  }
+
+  .beyond-badge {
+    margin-inline-start: auto;
+    color: var(--tint);
+    border-color: color-mix(in srgb, var(--tint) 35%, transparent);
+    background: transparent;
+  }
+
+  .beyond-desc {
+    margin-top: 14px;
+    color: var(--text-muted);
+    flex: 1;
+  }
+
+  .beyond-cta {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    margin-top: 20px;
+    font-size: 0.8125rem;
+    color: var(--text);
+  }
+
+  .beyond-link:hover .beyond-cta {
+    color: var(--tint);
+  }
+</style>
