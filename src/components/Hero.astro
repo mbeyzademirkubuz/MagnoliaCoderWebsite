@@ -14,7 +14,6 @@ const heroSocials = socials.filter((s) => ['github', 'linkedin', 'youtube'].incl
 ---
 
 <section class="hero" aria-labelledby="hero-name">
-  <div class="hero-aurora" aria-hidden="true"><span></span><span></span><span></span></div>
   <div class="container hero-grid">
     <div class="hero-text">
       <p class="hero-cmd mono" aria-hidden="true">
@@ -116,63 +115,6 @@ const heroSocials = socials.filter((s) => ['github', 'linkedin', 'youtube'].incl
     mask-image: radial-gradient(ellipse 70% 60% at 30% 40%, #000 30%, transparent 75%);
     -webkit-mask-image: radial-gradient(ellipse 70% 60% at 30% 40%, #000 30%, transparent 75%);
     opacity: 0.6;
-  }
-
-  .hero-aurora {
-    position: absolute;
-    inset: -20% -10% auto;
-    height: 120%;
-    z-index: -2;
-    filter: blur(70px);
-    opacity: 0.32;
-    pointer-events: none;
-  }
-
-  :global([data-theme='light']) .hero-aurora {
-    opacity: 0.22;
-  }
-
-  .hero-aurora span {
-    position: absolute;
-    border-radius: 50%;
-    animation: drift 26s ease-in-out infinite alternate;
-  }
-
-  .hero-aurora span:nth-child(1) {
-    width: 38vw;
-    height: 38vw;
-    left: 5%;
-    top: 10%;
-    background: var(--accent);
-    opacity: 0.55;
-  }
-
-  .hero-aurora span:nth-child(2) {
-    width: 32vw;
-    height: 32vw;
-    right: 8%;
-    top: 0;
-    background: var(--pink);
-    opacity: 0.45;
-    animation-duration: 32s;
-    animation-delay: -8s;
-  }
-
-  .hero-aurora span:nth-child(3) {
-    width: 30vw;
-    height: 30vw;
-    left: 35%;
-    top: 40%;
-    background: var(--green);
-    opacity: 0.35;
-    animation-duration: 38s;
-    animation-delay: -16s;
-  }
-
-  @keyframes drift {
-    0% { transform: translate(0, 0) scale(1); }
-    50% { transform: translate(6vw, 4vw) scale(1.15); }
-    100% { transform: translate(-4vw, 6vw) scale(0.9); }
   }
 
   .hero-grid {
