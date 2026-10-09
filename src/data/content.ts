@@ -27,7 +27,6 @@ export const socials = [
   { id: 'github', label: 'GitHub', handle: 'mbeyzademirkubuz', url: 'https://github.com/mbeyzademirkubuz' },
   { id: 'linkedin', label: 'LinkedIn', handle: 'mbeyzademirkubuz', url: 'https://www.linkedin.com/in/mbeyzademirkubuz/' },
   { id: 'youtube', label: 'YouTube', handle: '@beyzademirkubuzzz', url: 'https://www.youtube.com/@beyzademirkubuzzz' },
-  { id: 'x', label: 'X', handle: '@fdearmagnolia', url: 'https://twitter.com/fdearmagnolia' },
   { id: 'instagram', label: 'Instagram', handle: '@fromdearmagnolia', url: 'https://www.instagram.com/fromdearmagnolia/' },
 ];
 
